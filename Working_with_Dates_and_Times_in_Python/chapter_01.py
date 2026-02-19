@@ -2,12 +2,13 @@
 from datetime import date
 from repo import datesflorida
 
+print("\n" + ("#" * 75 + "\n")*2)
+
 florida_hurricane_dates = [date(dates[0], dates[1], dates[2]) for dates in datesflorida]
 print("Type of datesfloria: " + str(type(datesflorida)))
 #print(datesflorida)
 
-
-
+###################################################
 # Create a date object
 hurricane_andrew = date(1992, 8, 24)
 
@@ -22,12 +23,10 @@ early_hurricanes = 0
 # We loop over the dates
 for hurricane in florida_hurricane_dates:
   # Check if the month is before June (month number 6)
-
   if hurricane.month < 6:
     early_hurricanes = early_hurricanes + 1
     
 print("Early hurricanes (total): " + str(early_hurricanes))
-
 
 ################################################################
 
@@ -68,3 +67,44 @@ dates_ordered = sorted(dates_scrambled)
 # Print the first and last ordered dates
 print(dates_ordered[0])
 print(dates_ordered[-1])
+
+#########################################
+
+# Assign the earliest date to first_date
+first_date = min(florida_hurricane_dates)
+
+# Convert to ISO and US formats
+iso = "Our earliest hurricane date: " + first_date.isoformat()
+us = "Our earliest hurricane date: " + first_date.strftime("%m/%d/%Y")
+
+print("ISO: " + iso)
+print("US: " + us)
+
+#########################################
+from datetime import datetime
+
+# Create a datetime object
+dt = datetime(year=2017, month=10, day=1, hour=15, minute=26, second=26)
+
+# Print the results in ISO 8601 format
+print(dt.isoformat())
+
+dt_hr = dt.replace(year=1917)
+
+
+# Create a datetime object
+dt = datetime(2017, 12, 31, 15, 19, 13)
+
+# Replace the year with 1917
+dt_old = dt.replace(year=1917)
+
+# Print the results in ISO 8601 format
+print(dt_old.isoformat())
+
+#########################################
+
+import csv
+
+with open("datei.csv", newline="", encoding="utf-8") as f:
+    data = list(csv.DictReader(f))
+
