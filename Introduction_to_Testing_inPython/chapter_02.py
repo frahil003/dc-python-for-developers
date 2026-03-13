@@ -1,23 +1,17 @@
+# Import the pytest library
+import pandas as pd
 import pytest
 
-def multiple_of_two(num):
-    if num == 0:
-        raise(ValueError)
-    return num % 2 == 0
+# Define the fixture decorator
+@pytest.fixture
+# Name the fixture function
+def prepare_data():
+    return [i for i in range(10)]
 
-def test_numbers():
-    # Write the "True" test below
-    assert multiple_of_two(2) is True
-    # Write the "False" test below
-    assert multiple_of_two(3) is False
-
-def test_zero():    
-	# Add a context for an exception test here
-  with pytest.raises(ValueError):
-   	# Check zero input below
-    multiple_of_two(0)
-
-##################################################
+# Create the tests
+def test_elements(prepare_data):
+    assert 9 in prepare_data
+    assert 10 not in prepare_data
 
 '''
 Im Terminal ausführen
@@ -26,31 +20,70 @@ Im Terminal ausführen
 
 ##################################################
 
-'''
-Im Terminal ausführen
->>> pytest chapter_02.py -k "numbers"
-'''
+# Define the fixture for returning the length
+@pytest.fixture
+def list_length():
+    return 10
 
-##################################################
+# Define the fixture for a list preparation
+@pytest.fixture
+def prepare_list(list_length):
+    return [i for i in range(list_length)]
 
-# Add the pytest marker decorator here
-@pytest.mark.xfail
-def test_fails():
-    # Write any assert test that will fail
-    assert multiple_of_two(5) is True
+def test_9(prepare_list):
+    assert 9 in prepare_list
+    assert 10 not in prepare_list
 
 ####################################################
-from datetime import datetime
 
-day_of_week = datetime.now().isoweekday()
+@pytest.fixture
+def init_list():
+    return []
 
-def get_unique_values(lst):
-    return list(set(lst))
+# Declare the fixture with autouse
+@pytest.fixture(autouse=True)
+def add_numbers_to_list(init_list):
+    init_list.extend([i for i in range(10)])
 
-condition_string = 'day_of_week == 6'
-# Add the conditional skip marker and the string here
-@pytest.mark.skipif(condition_string)
-def test_function():
-	# Complete the assertion tests here
-    assert get_unique_values([1,2,3]) == [1,2,3]
-    assert get_unique_values([1,2,3,1]) == [1,2,3,4]
+# Complete the tests
+def test_elements_2(init_list):
+    assert 1 in init_list
+    assert 9 in init_list
+
+######################################################
+
+@pytest.fixture
+def prepare_data_3():
+    data = [i for i in range(10)]
+    # Return the data with the special keyword
+    yield data
+    # Clear the data list
+    data.clear()
+    # Delete the data variable
+    del data
+
+def test_elements_3(prepare_data):
+    assert 9 in prepare_data
+    assert 10 not in prepare_data
+
+#######################################################
+
+@pytest.fixture
+def data():
+    df = pd.read_csv('../data/games.csv')
+    # Return df with the special keyword
+    yield df
+    # Remove all rows in df
+    df.drop(df.index, inplace=True)
+    # Delete the df variable
+    del df
+
+def test_type(data):
+    assert type(data) == pd.DataFrame
+
+def test_shape(data):
+    assert data.shape[0] == 1512
+
+
+
+
