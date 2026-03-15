@@ -170,5 +170,49 @@ class DataPipeline:
     print(f"Extracted dataset from {provider} database")
     return dataset
 
+####################################################
+print("#"*50)
+
+# Create an ETL DataPipeline, query using Redshift
+items_pipeline = DataPipeline()
+items_pipeline.extract_data("Redshift", "SELECT * FROM items;")
+
+# Now, switch the pipeline to Postgres
+items_pipeline.extract_data("Postgres", "SELECT * FROM items;")
+
+# Finally, create an etl_pipeline with Redshift
+etl_pipeline = DataPipeline()
+etl_pipeline.extract_data("Redshift", "SELECT * FROM sales;")
+
+######################################################
+print("#"*50)
+
+class LLM(ABC):
+  @abstractmethod
+  def complete_sentence(self, prompt):
+    pass
+
+class OpenAI(LLM):
+  def complete_sentence(self, prompt):
+    return prompt + " ... OpenAI end of sentence."
+  
+class Anthropic(LLM):
+  def complete_sentence(self, prompt):
+    return prompt + " ... Anthropic end of sentence."
+
+class ChatBot:
+  def _get_llm(self, provider):
+    if provider == "OpenAI":
+      return OpenAI()
+    elif provider == "Anthropic":
+      return Anthropic()
+      
+  def chat(self, prompt, provider):
+    # Return an llm object, then call complete_sentence()
+    llm = self._get_llm(provider)
+    return llm.complete_sentence(prompt)
+
+
+
 
 
