@@ -9,14 +9,14 @@ class YourSpider(scrapy.Spider):
   name = 'yourspider'
   # start_requests method
   async def start( self ):
-    yield scrapy.Request(url = "https://example.com", callback = self.parse)
-      
+    yield scrapy.Request(url = "https://franks-divecenter.de", callback = self.parse)
+
+  # parse method    
   def parse(self, response):
-    # My version of the parser you wrote in the previous part
-    text = response.css('h1::text').extract()
-    for text in text:
-      result_dict['H1'] = text
-    
+    texts = response.css('p::text').getall()
+    texts = [t.strip() for t in texts if t.strip()]
+    result_dict['Text'] = texts
+
 # Initialize the dictionary **outside** of the Spider class
 result_dict = dict()
 
